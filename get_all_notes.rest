@@ -1,6 +1,6 @@
 
 
-POST http://localhost:3001/api/persons
+GET https://fast-wave-75202.herokuapp.com/api/persons
 Content-Type: application/json
 
 {
