@@ -6,7 +6,7 @@ const app = express()
 
 
 morgan.token('post-content', (tokens) => {
-    return JSON.stringify(tokens.body)
+  return JSON.stringify(tokens.body)
 })
 
 app.use(express.json())
@@ -27,18 +27,18 @@ app.get('/', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-    let ts = new Date();
-    res.send(
-        `<div>
+  let ts = new Date()
+  res.send(
+    `<div>
             <p>
-                ${persons.length}
+                ${Person.length}
             </p>
             <p>
                 ${ts}
             </p>
         </div>`
-    )
-  })
+  )
+})
 
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -51,28 +51,28 @@ app.get('/api/persons/:id', (request, response, next) => {
       }
     })
     .catch(error => next(error))
+})
+
+
+app.post('/api/persons', (request, response, next) => {
+  const body = request.body
+  if (body.name === undefined) {
+    return response.status(400).json({ error: 'Name  missing' })
+  }
+
+  if (body.number === undefined) {
+    return response.status(400).json({ error: 'Number missing' })
+  }
+
+  const person = new Person({
+    name: body.name,
+    number: body.number,
   })
 
-
-  app.post('/api/persons', (request, response, next) => {
-    const body = request.body
-    if (body.name === undefined) {
-      return response.status(400).json({ error: 'Name  missing' })
-    }
-
-    if (body.number === undefined) {
-      return response.status(400).json({ error: 'Number missing' })
-    }
-  
-    const person = new Person({
-      name: body.name,
-      number: body.number,
-    })
-  
-    person.save().then(savedPerson => {
-      response.json(savedPerson)
-    }).catch(error => next(error))
-  })
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  }).catch(error => next(error))
+})
 
 
 app.get('/api/persons', (req, res) => {
@@ -83,7 +83,7 @@ app.get('/api/persons', (req, res) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -111,7 +111,8 @@ const errorHandler = (error, request, response, next) => {
 app.use(errorHandler)
 
 
-  const PORT = process.env.PORT
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-  })
+// eslint-disable-next-line no-undef
+const PORT = process.env.PORT
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
